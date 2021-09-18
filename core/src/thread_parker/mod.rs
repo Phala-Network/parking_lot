@@ -52,8 +52,15 @@ pub trait UnparkHandleT {
 
 cfg_if! {
     if #[cfg(any(target_os = "linux", target_os = "android"))] {
-        #[path = "linux.rs"]
-        mod imp;
+        cfg_if! {
+            if #[cfg(feature = "phala-sgx")] {
+                #[path = "phala_sgx.rs"]
+                mod imp;
+            } else {
+                #[path = "linux.rs"]
+                mod imp;
+            }
+        }
     } else if #[cfg(unix)] {
         #[path = "unix.rs"]
         mod imp;
